@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
@@ -15,26 +16,25 @@ class Product
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"product"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"product"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product"})
      */
     private $name;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2)
-     */
-    private $price;
-
-    /**
      * @ORM\Column(type="text")
+     * @Groups({"product"})
      */
     private $description;
 
@@ -45,14 +45,28 @@ class Product
     private $customer;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Media", mappedBy="product")
+     * @ORM\Column(type="string", length=50)
+     * @Groups({"product"})
      */
-    private $media;
+    private $mark;
 
-    public function __construct()
-    {
-        $this->media = new ArrayCollection();
-    }
+    /**
+     * @ORM\Column(type="string", length=150, nullable=true)
+     * @Groups({"product"})
+     */
+    private $screenDetails;
+
+    /**
+     * @ORM\Column(type="string", length=150, nullable=true)
+     * @Groups({"product"})
+     */
+    private $camera_details;
+
+    /**
+     * @ORM\Column(type="string", length=150, nullable=true)
+     * @Groups({"product"})
+     */
+    private $chip;
 
     public function getId(): ?int
     {
@@ -70,27 +84,15 @@ class Product
 
         return $this;
     }
-
-    public function getName(): ?string
+    
+    public function getName()
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name)
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    public function setPrice($price): self
-    {
-        $this->price = $price;
 
         return $this;
     }
@@ -119,33 +121,50 @@ class Product
         return $this;
     }
 
-    /**
-     * @return Collection|Media[]
-     */
-    public function getMedia(): Collection
+    public function getMark(): ?string
     {
-        return $this->media;
+        return $this->mark;
     }
 
-    public function addMedium(Media $medium): self
+    public function setMark(string $mark): self
     {
-        if (!$this->media->contains($medium)) {
-            $this->media[] = $medium;
-            $medium->setProduct($this);
-        }
+        $this->mark = $mark;
 
         return $this;
     }
 
-    public function removeMedium(Media $medium): self
+    public function getScreenDetails(): ?string
     {
-        if ($this->media->contains($medium)) {
-            $this->media->removeElement($medium);
-            // set the owning side to null (unless already changed)
-            if ($medium->getProduct() === $this) {
-                $medium->setProduct(null);
-            }
-        }
+        return $this->screenDetails;
+    }
+
+    public function setScreenDetails(?string $screenDetails): self
+    {
+        $this->screenDetails = $screenDetails;
+
+        return $this;
+    }
+
+    public function getCameraDetails(): ?string
+    {
+        return $this->camera_details;
+    }
+
+    public function setCameraDetails(?string $camera_details): self
+    {
+        $this->camera_details = $camera_details;
+
+        return $this;
+    }
+
+    public function getChip(): ?string
+    {
+        return $this->chip;
+    }
+
+    public function setChip(?string $chip): self
+    {
+        $this->chip = $chip;
 
         return $this;
     }

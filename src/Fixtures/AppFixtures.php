@@ -65,7 +65,10 @@ class AppFixtures extends Fixture
             $product = new Product();
             $product->setCreatedAt($this->faker->dateTimeBetween());
             $product->setName($this->faker->userName);
-            $product->setPrice($this->faker->randomFloat(2, 50, 2000));
+            $product->setMark($this->faker->company);
+            $product->setScreenDetails($this->faker->sentence());
+            $product->setCameraDetails($this->faker->sentence());
+            $product->setChip($this->faker->sentence());
             $product->setDescription($this->faker->sentence(550));
             $product->setCustomer($this->getReference('Customer_'.rand(1, self::NB_CUSTOMER)));
             $manager->persist($product);
