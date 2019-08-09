@@ -111,35 +111,26 @@
     "fzaninotto/faker": {
         "version": "v1.8.0"
     },
-    "guzzlehttp/guzzle": {
-        "version": "6.3.3"
-    },
-    "guzzlehttp/promises": {
-        "version": "v1.3.1"
-    },
-    "guzzlehttp/psr7": {
-        "version": "1.6.1"
-    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
-    "knpuniversity/oauth2-client-bundle": {
-        "version": "1.20",
+    "lcobucci/jwt": {
+        "version": "3.3.1"
+    },
+    "lexik/jwt-authentication-bundle": {
+        "version": "2.5",
         "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
+            "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "1.20",
-            "ref": "80acc9223a205cbf5d9828fd616c82a374d281dd"
+            "version": "2.5",
+            "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
         },
         "files": [
-            "./config/packages/knpu_oauth2_client.yaml"
+            "./config/packages/lexik_jwt_authentication.yaml"
         ]
     },
-    "league/oauth2-client": {
-        "version": "2.4.1"
-    },
-    "league/oauth2-google": {
-        "version": "3.0.1"
+    "namshi/jose": {
+        "version": "7.2.3"
     },
     "nelmio/api-doc-bundle": {
         "version": "3.0",
@@ -178,14 +169,8 @@
     "psr/container": {
         "version": "1.0.0"
     },
-    "psr/http-message": {
-        "version": "1.0.1"
-    },
     "psr/log": {
         "version": "1.1.0"
-    },
-    "ralouphie/getallheaders": {
-        "version": "3.0.3"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -345,7 +330,28 @@
             "./config/routes.yaml"
         ]
     },
+    "symfony/security-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "e5a0228251d1dd2bca4c8ef918e14423c06db625"
+        },
+        "files": [
+            "./config/packages/security.yaml"
+        ]
+    },
     "symfony/security-core": {
+        "version": "v4.3.3"
+    },
+    "symfony/security-csrf": {
+        "version": "v4.3.3"
+    },
+    "symfony/security-guard": {
+        "version": "v4.3.3"
+    },
+    "symfony/security-http": {
         "version": "v4.3.3"
     },
     "symfony/serializer": {

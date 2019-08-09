@@ -9,13 +9,13 @@ class ProductController extends ObjectManagerController
 {
     /**
      * @Rest\View(serializerGroups={"product"})
-     * @Rest\Get("/products")
-     * @Rest\Get("/products/{id}")
+     * @Rest\Get("/api/products")
+     * @Rest\Get("/api/products/{id}")
      */
     public function getProductsAction(Product $product = null)
     {
-        if (null === $product) {
-            $products = $this->em->getRepository(Product::class)->findAll();
+        if (null === $product || $product->getCustomer() !== $this->getUser()) {
+            $products = $this->em->getRepository(Product::class)->findBy(['customer' => $this->getUser()]);
 
             $data = [];
 

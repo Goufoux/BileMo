@@ -15,4 +15,4 @@ fos_rest:
       - { path: '^/', priorities: ['json'], fallback_format: 'json' }
 
   # param_fetcher_listener: force
-  # disable_csrf_role: ROLE_API
+  disable_csrf_role: ROLE_USER

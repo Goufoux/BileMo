@@ -12,13 +12,13 @@ class UserController extends ObjectManagerController
 {
     /**
      * @Rest\View(serializerGroups={"user"})
-     * @Rest\Get("/users")
-     * @Rest\Get("/users/{id}")
+     * @Rest\Get("api/users")
+     * @Rest\Get("api/users/{id}")
      */
     public function getUsersAction(User $user = null)
     {
         if (null === $user) {
-            $users = $this->em->getRepository(User::class)->findAll();
+            $users = $this->em->getRepository(User::class)->findBy(['customer' => $this->getUser()]);
 
             $data = [];
 
@@ -46,7 +46,7 @@ class UserController extends ObjectManagerController
 
     /**
      * @Rest\View(serializerGroups={"user"})
-     * @Rest\Post("/users")
+     * @Rest\Post("api/users")
      */
     public function postUsersAction(Request $request)
     {
@@ -62,6 +62,8 @@ class UserController extends ObjectManagerController
             if (false === $form->isValid()) {
                 return $this->view($form, Response::HTTP_BAD_REQUEST);
             }
+
+            $user->setCustomer($this->getUser());
 
             $this->em->persist($user);
         }
@@ -80,10 +82,13 @@ class UserController extends ObjectManagerController
 
     /**
      * @Rest\View()
-     * @Rest\Delete("/users/{id}")
+     * @Rest\Delete("api/users/{id}")
      */
     public function deleteUsersAction(User $user)
     {
+        if ($user->getCustomer() !== $this->getUser()) {
+            return $this->view([], Response::HTTP_NOT_FOUND);
+        }
         $this->em->remove($user);
         $this->em->flush();
 
