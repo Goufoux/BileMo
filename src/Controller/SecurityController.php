@@ -14,5 +14,10 @@ class SecurityController extends AbstractFOSRestController
     public function getLoginAction()
     {
         $user = $this->getUser();
+
+        return $this->view([
+            'email' => $user->getEmail(),
+            'roles' => $user->getRoles()
+        ]);
     }
 }
