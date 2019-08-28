@@ -64,11 +64,11 @@ class ProductController extends ObjectManagerController
             return $data;
         }
 
-        // $key = 'product.'.$product->getId();
+        $key = 'product.'.$product->getId();
 
-        // $onCache = $this->cache->getItem($key);
+        $onCache = $this->cache->getItem($key);
             
-        // if (!$onCache->isHit()) {
+        if (!$onCache->isHit()) {
             $data = [];
             
             $data = [
@@ -79,15 +79,15 @@ class ProductController extends ObjectManagerController
                 ]
             ];
             
-            // $item = $this->cache->getItem($key);
-            // $item->expiresAfter(3600);
-            // $item->set($data);
-            // $this->cache->save($item);
+            $item = $this->cache->getItem($key);
+            $item->expiresAfter(3600);
+            $item->set($data);
+            $this->cache->save($item);
             
             return $data;
-        // }
-        // $data = $onCache->get();
+        }
+        $data = $onCache->get();
 
-        // return $data;
+        return $data;
     }
 }
