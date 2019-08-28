@@ -8,20 +8,22 @@ use Faker\Factory;
 use App\Entity\User;
 use App\Entity\Customer;
 use App\Entity\Product;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
     const NB_CUSTOMER = 10;
     const NB_USER = 20;
     const NB_PRODUCT = 100;
+    const PASSWORD = 'password';
 
-    private $manager;
     private $faker;
+    private $passwordEncoder;
 
-    public function __construct(ObjectManager $manager)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
-        $this->manager = $manager;
         $this->faker = Factory::create('fr_FR');
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function load(ObjectManager $manager)
@@ -39,7 +41,11 @@ class AppFixtures extends Fixture
             $customer = new Customer();
             $customer->setCreatedAt($this->faker->dateTimeBetween());
             $customer->setCompany($this->faker->company);
-            $customer->setToken($this->faker->sha256);
+            $customer->setEmail($this->faker->email);
+            $customer->setPassword($this->passwordEncoder->encodePassword(
+                $customer,
+                self::PASSWORD
+            ));
             $this->addReference('Customer_'.$i, $customer);
             $manager->persist($customer);
         }
