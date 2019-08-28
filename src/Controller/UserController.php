@@ -7,46 +7,108 @@ use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Form\UserType;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 class UserController extends ObjectManagerController
 {
     /**
+     * Get all users or specified user if id is in parameter
+     * 
      * @Rest\View(serializerGroups={"user"})
      * @Rest\Get("api/users")
      * @Rest\Get("api/users/{id}")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Ok",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"user"}))
+     *     )
+     * )
+     * 
+     * @SWG\Tag(name="User")
      */
     public function getUsersAction(User $user = null)
     {
-        if (null === $user) {
-            $users = $this->em->getRepository(User::class)->findBy(['customer' => $this->getUser()]);
+        if (null === $user || $user->getCustomer() !== $this->getUser()) {
+            
+            $key = 'user.all';
+            
+            $onCache = $this->cache->getItem($key);
+            
+            if (!$onCache->isHit()) {
+                $data = [];
+                $users = $this->em->getRepository(User::class)->findBy(['customer' => $this->getUser()]);
+            
+                $data = [];
 
-            $data = [];
-
-            foreach ($users as $user) {
-                $data[] = [
-                    'user' => $user,
-                    'link' => [
-                        'remove' => "/users/{$user->getId()}"
-                    ]
-                ];
+                foreach ($users as $user) {
+                    $data[] = [
+                        'user' => $user,
+                        'link' => [
+                            'remove' => "/users/{$user->getId()}"
+                        ]
+                    ];
+                }
+                $item = $this->cache->getItem($key);
+                $item->expiresAfter(3600);
+                $item->set($data);
+                $this->cache->save($item);
+                
+                return $data;
             }
+            $data = $onCache->get();
 
             return $data;
         }
 
-        $data = [
-            'user' => $user,
-            'link' => [
-                'remove' => "/users/{$user->getId()}"
-            ]
-        ];
+        $key = 'user.'.$user->getId();
 
+        $onCache = $this->cache->getItem($key);
+            
+        if (!$onCache->isHit()) {
+            $data = [
+                'user' => $user,
+                'link' => [
+                    'remove' => "/users/{$user->getId()}"
+                ]
+            ];
+            $item = $this->cache->getItem($key);
+            $item->expiresAfter(3600);
+            $item->set($data);
+            $this->cache->save($item);
+            
+            return $data;
+        }
+
+        $data = $onCache->get();
+        
         return $data;
     }
 
     /**
+     * Create users
+     *
      * @Rest\View(serializerGroups={"user"})
      * @Rest\Post("api/users")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Ok",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"user"}))
+     *     )
+     * )
+     *
+     * @SWG\Response(
+     *      response=400,
+     *      description="Form is invalid"
+     * )
+     * 
+     * @SWG\Tag(name="User")
      */
     public function postUsersAction(Request $request)
     {
@@ -81,8 +143,17 @@ class UserController extends ObjectManagerController
     }
 
     /**
+     * Remove an user
+     *
      * @Rest\View()
      * @Rest\Delete("api/users/{id}")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Ok"
+     * )
+     * 
+     * @SWG\Tag(name="User")
      */
     public function deleteUsersAction(User $user)
     {
