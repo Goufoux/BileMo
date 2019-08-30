@@ -6,7 +6,7 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class CacheService
 {
-    const EXPIRE_CACHE = 1;
+    const EXPIRE_CACHE = 3600;
 
     private $adapter;
     
