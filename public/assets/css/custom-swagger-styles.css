@@ -1,0 +1,13 @@
+body {
+    background: rgba(0, 0, 0, 0.685);
+}
+header::before {
+    background: linear-gradient(rgba(0, 0, 0, 0.658) 10%, rgb(59, 59, 59) 11%);
+}
+.opblock-tag a span {
+    color: white;
+    text-shadow: 1px 2px 3px black;
+}
+.block .models {
+    background: white;
+}
