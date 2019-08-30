@@ -36,26 +36,14 @@ class UserController extends ObjectManagerController
             
             $key = 'user.all';
             
-            $onCache = $this->cache->getItem($key);
+            $onCache = $this->adapter->getItem($key);
             
             if (!$onCache->isHit()) {
-                $data = [];
                 $users = $this->em->getRepository(User::class)->findBy(['customer' => $this->getUser()]);
             
-                $data = [];
+                $data = $this->linkService->getObjectsLinks('users', $users, ['view']);
 
-                foreach ($users as $user) {
-                    $data[] = [
-                        'user' => $user,
-                        'link' => [
-                            'remove' => "/users/{$user->getId()}"
-                        ]
-                    ];
-                }
-                $item = $this->cache->getItem($key);
-                $item->expiresAfter(3600);
-                $item->set($data);
-                $this->cache->save($item);
+                $this->cache->saveItem($key, $data);
                 
                 return $data;
             }
@@ -66,19 +54,12 @@ class UserController extends ObjectManagerController
 
         $key = 'user.'.$user->getId();
 
-        $onCache = $this->cache->getItem($key);
+        $onCache = $this->adapter->getItem($key);
             
         if (!$onCache->isHit()) {
-            $data = [
-                'user' => $user,
-                'link' => [
-                    'remove' => "/users/{$user->getId()}"
-                ]
-            ];
-            $item = $this->cache->getItem($key);
-            $item->expiresAfter(3600);
-            $item->set($data);
-            $this->cache->save($item);
+            $data = $this->linkService->getObjectLinks('user', $user, ['all', 'remove']);
+
+            $this->cache->saveItem($key, $data);
             
             return $data;
         }
