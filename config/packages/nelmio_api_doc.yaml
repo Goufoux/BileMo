@@ -3,8 +3,12 @@ nelmio_api_doc:
         schemes: [http, https]
         info:
             title: BileMo
-            description: This is an awesome app!
+            description: BileMo Api
             version: 1.0.0
+            contact:
+                name: "Api Support :"
+                url: "https://bilemo.fr/support/api"
+                email: "support.api@bilemo.com"
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
