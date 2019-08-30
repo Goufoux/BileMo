@@ -25,10 +25,10 @@ class ProductController extends ObjectManagerController
      * 
      * @SWG\Tag(name="Produit")
      */
-    public function getProductsAction(Product $product = null)
+    public function getProductsAction($id = null)
     {
-        if (null === $product || $product->getCustomer() !== $this->getUser()) {
-        
+        if (null === $id) {
+            
             $key = 'products.all';
             
             $onCache = $this->adapter->getItem($key);
@@ -50,11 +50,13 @@ class ProductController extends ObjectManagerController
             return $data;
         }
 
-        $key = "product.{$product->getId()}";
+        $key = "product.$id";
 
         $onCache = $this->adapter->getItem($key);
             
         if (!$onCache->isHit()) {
+            
+            $product = $this->em->getRepository(Product::class)->findOneBy(['id' => $id]);
             $data = $this->linkService->getObjectLinks('products', $product, ['all', 'remove']);
             
             $this->cache->saveItem($key, $data);            

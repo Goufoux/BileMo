@@ -11,7 +11,7 @@ class LinkService
         ];
 
         foreach ($flags as $flag) {
-            $data['link'][$flag] = $this->getLink($model, $flag, $object);
+            $data['_links'][$flag] = $this->getLink($model, $flag, $object);
         }
 
         return $data;
@@ -30,7 +30,7 @@ class LinkService
             
             $data[] = [
                 $model => $object,
-                'link' => $link
+                '_links' => $link
             ];
         }
 

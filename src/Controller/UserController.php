@@ -30,9 +30,9 @@ class UserController extends ObjectManagerController
      * 
      * @SWG\Tag(name="User")
      */
-    public function getUsersAction(User $user = null)
+    public function getUsersAction($id)
     {
-        if (null === $user || $user->getCustomer() !== $this->getUser()) {
+        if (null === $id) {
             
             $key = 'user.all';
             
@@ -52,11 +52,17 @@ class UserController extends ObjectManagerController
             return $data;
         }
 
-        $key = 'user.'.$user->getId();
+        $key = 'user.'.$id;
 
         $onCache = $this->adapter->getItem($key);
             
         if (!$onCache->isHit()) {
+            $user = $this->em->getRepository(User::class)->findOneBy(['id' => $id]);
+
+            if (null === $user) {
+                return $this->view(['message', 'User not found'], Response::HTTP_NOT_FOUND);
+            }
+
             $data = $this->linkService->getObjectLinks('user', $user, ['all', 'remove']);
 
             $this->cache->saveItem($key, $data);
