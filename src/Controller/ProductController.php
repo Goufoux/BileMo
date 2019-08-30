@@ -4,13 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\Cache\Adapter\DoctrineAdapter;
-use Doctrine\Common\Cache\CacheProvider;
-use Doctrine\Common\Cache\SQLite3Cache;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
-use Symfony\Component\Cache\CacheItem;
-use Symfony\Contracts\Cache\ItemInterface;
 
 class ProductController extends ObjectManagerController
 {
@@ -36,53 +31,33 @@ class ProductController extends ObjectManagerController
         
             $key = 'products.all';
             
-            $onCache = $this->cache->getItem($key);
+            $onCache = $this->adapter->getItem($key);
             
-            if (!$onCache->isHit()) {
-                $data = [];
-                
-                $products = $this->em->getRepository(Product::class)->findBy(['customer' => $this->getUser()]);
-                
-                foreach ($products as $product) {
-                    $data[] = [
-                        'product' => $product,
-                        'link' => [
-                            'view' => "api/products/{$product->getId()}"
-                        ]
-                    ];
-                }
-                
-                $item = $this->cache->getItem($key);
-                $item->expiresAfter(3600);
-                $item->set($data);
-                $this->cache->save($item);
-                
+            if (true === $onCache->isHit()) {
+                $data = $onCache->get();
+    
                 return $data;
             }
-            $data = $onCache->get();
 
+            $data = [];
+                
+            $products = $this->em->getRepository(Product::class)->findBy(['customer' => $this->getUser()]);
+
+            $data = $this->linkService->getObjectsLinks('products', $products, ['view']);
+            
+            $this->cache->saveItem($key, $data);
+            
             return $data;
         }
 
-        $key = 'product.'.$product->getId();
+        $key = "product.{$product->getId()}";
 
-        $onCache = $this->cache->getItem($key);
+        $onCache = $this->adapter->getItem($key);
             
         if (!$onCache->isHit()) {
-            $data = [];
+            $data = $this->linkService->getObjectLinks('products', $product, ['all', 'remove']);
             
-            $data = [
-                'product' => $product,
-                'link' => [
-                    'remove' => "api/products/{$product->getId()}",
-                    'all' => "api/products"
-                ]
-            ];
-            
-            $item = $this->cache->getItem($key);
-            $item->expiresAfter(3600);
-            $item->set($data);
-            $this->cache->save($item);
+            $this->cache->saveItem($key, $data);            
             
             return $data;
         }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Customer;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -18,16 +19,29 @@ class SecurityController extends AbstractFOSRestController
      *     response=200,
      *     description="Successfull authenticated"
      * )
-     * 
+     *
+     * @SWG\Parameter(
+     *  name="data",
+     *  in="body",
+     *  required=true,
+     *  description="Required parameters for authentication",
+     *  @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="username", type="string"),
+     *      @SWG\Property(property="password", type="string")
+     *    ),
+     *  )
+     * )
+     *
      * @SWG\Tag(name="Login")
      */
     public function getLoginAction()
     {
-        $user = $this->getUser();
+        // $user = $this->getUser();
 
-        return $this->view([
-            'email' => $user->getEmail(),
-            'roles' => $user->getRoles()
-        ]);
+        // return $this->view([
+        //     'email' => $user->getEmail(),
+        //     'roles' => $user->getRoles()
+        // ]);
     }
 }
