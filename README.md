@@ -9,3 +9,8 @@ Install :
 - clone project
 - use composer install
 - generate default data with doctrine:fixtures:load -n
+
+Configure JWT:
+
+- Generate a private and public key, and save it to config/jwt
+- Update the .env 
