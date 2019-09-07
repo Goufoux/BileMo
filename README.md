@@ -7,3 +7,4 @@ Maintainability of Project :
 Install :
 clone project
 use composer install
+generate default data with doctrine:fixtures:load -n
