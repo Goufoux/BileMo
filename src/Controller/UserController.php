@@ -47,30 +47,28 @@ class UserController extends ObjectManagerController
                 
                 return $data;
             }
+
             $data = $onCache->get();
-
-            return $data;
-        }
-
-        $key = 'user.'.$id;
-
-        $onCache = $this->adapter->getItem($key);
-            
-        if (!$onCache->isHit()) {
-            $user = $this->em->getRepository(User::class)->findOneBy(['id' => $id]);
-
-            if (null === $user) {
-                return $this->view(['message', 'User not found'], Response::HTTP_NOT_FOUND);
+        } else {
+            $key = 'user.'.$id;
+    
+            $onCache = $this->adapter->getItem($key);
+                
+            if (!$onCache->isHit()) {
+                $user = $this->em->getRepository(User::class)->findOneBy(['id' => $id]);
+    
+                if (null === $user) {
+                    return $this->view(['message', 'User not found'], Response::HTTP_NOT_FOUND);
+                }
+    
+                $data = $this->linkService->getObjectLinks('user', $user, ['all', 'remove']);
+    
+                $this->cache->saveItem($key, $data);
+                
+                return $data;
             }
-
-            $data = $this->linkService->getObjectLinks('user', $user, ['all', 'remove']);
-
-            $this->cache->saveItem($key, $data);
-            
-            return $data;
+            $data = $onCache->get();
         }
-
-        $data = $onCache->get();
         
         return $data;
     }
