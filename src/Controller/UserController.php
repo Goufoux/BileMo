@@ -111,7 +111,7 @@ class UserController extends ObjectManagerController
             if (false === $form->isValid()) {
                 return $this->view($form, Response::HTTP_BAD_REQUEST);
             }
-
+            $user->setCreatedAt(new \DateTime());
             $user->setCustomer($this->getUser());
 
             $this->em->persist($user);
@@ -121,8 +121,8 @@ class UserController extends ObjectManagerController
 
         $data = [
             'link' => [
-                'view' => "/users/{$user->getId()}",
-                'remove' => "/users/{$user->getId()}"
+                'view' => "api/users/{$user->getId()}",
+                'remove' => "api/users/{$user->getId()}"
             ]
         ];
 
